@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(res => res.json())
         .then(res => {
             if (res.success) {
-                // Agregar la nueva categoría directamente al array local
+                
                 categorias.push({ id: res.nuevoId, nombre }); 
                 renderCategorias();
                 form.reset();
