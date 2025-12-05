@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Análisis de Ventas - Agroquímica La Bellota</title>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body { font-family: 'Roboto', sans-serif; background: linear-gradient(to bottom, #74E874 0%, #40E0D0 20%, #20B2AA 40%, #008B8B 100%); min-height: 100vh; margin: 0; }
+.header { background-color: #ffffff; padding: 15px 20px; border-bottom: 1px solid #ddd; display:flex; align-items:center; gap:20px; }
+.back-button { font-size: 30px; text-decoration: none; color: #00bfff; }
+.header-title { font-size: 22px; color: #00bfff; font-weight:bold; }
+
+.container { max-width: 1100px; margin: 24px auto; background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+
+.controls { display:flex; gap:12px; align-items:center; margin-bottom:14px; }
+.generate-btn { padding: 12px 18px; border:none; background: linear-gradient(135deg,#76b900,#40c057); color:white; border-radius: 10px; cursor:pointer; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+.refresh-btn { padding: 10px 14px; border:none; background:#00bfff; color:white; border-radius:10px; cursor:pointer; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.card { background:#fafafa; border-radius:10px; padding:14px; border-left:6px solid #76b900; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+.card h3 { margin:0 0 8px 0; color:#008b8b; font-size:16px; }
+.small { font-size:13px; color:#666; margin-bottom:8px; }
+
+/* Result area (IA) */
+.ia-card { margin-top:18px; background:#fff; border-radius:10px; padding:16px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-left:6px solid #00bfff; }
+.ia-title { font-size:18px; color:#00bfff; font-weight:bold; margin-bottom:8px; }
+.ia-text { white-space: pre-wrap; font-size:15px; color:#333; line-height:1.4; max-height:360px; overflow:auto; }
+
+/* Responsive */
+@media (max-width:900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <a href="/menu" class="back-button">&lt;</a>
+    <div class="header-title">Análisis de Ventas (IA + Gráficas)</div>
+</div>
+
+<div class="container">
+    <div class="controls">
+        <button class="generate-btn" id="btnIA">Generar Análisis con IA</button>
+        <button class="refresh-btn" id="btnRefresh">Actualizar gráficas</button>
+        <div style="margin-left:auto; font-weight:bold; color:#333;">Últimos 14 días • Datos reales</div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>📈 Ventas por día (últimos 14 días)</h3>
+            <p class="small">Suma de totales por día.</p>
+            <canvas id="chartVentasDia" height="180"></canvas>
+        </div>
+
+        <div class="card">
+            <h3>🧾 Productos más vendidos (Top)</h3>
+            <p class="small">Cantidad total vendida por producto.</p>
+            <canvas id="chartProductos" height="180"></canvas>
+        </div>
+
+        <div class="card">
+            <h3>📊 Participación por categoría (monto)</h3>
+            <p class="small">Distribución del monto vendido por categoría.</p>
+            <canvas id="chartCategorias" height="220"></canvas>
+        </div>
+
+        <div class="card">
+            <h3>🔎 Indicadores rápidos</h3>
+            <p class="small" id="indicadoresText">Cargando...</p>
+            <div style="margin-top:12px;">
+                <strong>Ventas totales (14d):</strong> <span id="total14">-</span><br>
+                <strong>Productos distintos vendidos:</strong> <span id="prodDistinct">-</span><br>
+                <strong>Categorías activas:</strong> <span id="catsActive">-</span><br>
+            </div>
+        </div>
+    </div>
+
+    <div class="ia-card">
+        <div class="ia-title">🧠 Análisis generado por IA</div>
+        <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px;">
+            <div style="font-size:13px; color:#666;">Presiona <strong>Generar Análisis con IA</strong> para obtener un reporte profesional basado en los datos presentes en la base de datos.</div>
+            <div style="margin-left:auto;">
+                <button id="btnDownloadText" style="padding:8px 12px; border-radius:8px; border:none; background:#76b900; color:white; cursor:pointer;">Descargar TXT</button>
+            </div>
+        </div>
+        <div id="iaResult" class="ia-text">Aún no se ha generado el análisis.</div>
+    </div>
+</div>
+
+<script>
+let chartVentasDia, chartProductos, chartCategorias;
+const ctxVentas = document.getElementById('chartVentasDia').getContext('2d');
+const ctxProductos = document.getElementById('chartProductos').getContext('2d');
+const ctxCategorias = document.getElementById('chartCategorias').getContext('2d');
+
+function formateaNumero(n){ return new Intl.NumberFormat().format(n); }
+
+async function fetchDatos(){
+    document.getElementById('indicadoresText').textContent = 'Cargando...';
+    try {
+        const res = await fetch('/analisis_datos');
+        const data = await res.json();
+        if(!data.success){
+            alert('Error al obtener datos: ' + (data.error||'desconocido'));
+            return null;
+        }
+        return data;
+    } catch(e){
+        alert('Error de conexión: ' + e);
+        return null;
+    }
+}
+
+function renderIndicadores(data){
+    // Total 14d
+    const total14 = data.ventas_por_dia.values.reduce((a,b)=>a+b,0);
+    document.getElementById('total14').textContent = '$' + formateaNumero(total14.toFixed(2));
+
+    // productos distintos
+    document.getElementById('prodDistinct').textContent = data.productos_top.length;
+    document.getElementById('catsActive').textContent = data.categorias.labels.length;
+
+    // mini texto
+    const top1 = data.productos_top.length ? data.productos_top[0].label + ' (' + data.productos_top[0].cantidad + ')' : 'N/D';
+    document.getElementById('indicadoresText').textContent = `Producto estrella: ${top1}. Últimos 14 días con ${data.ventas_por_dia.values.filter(v=>v>0).length} días con ventas.`;
+}
+
+function buildCharts(data){
+    // Ventas por día (line)
+    if(chartVentasDia) chartVentasDia.destroy();
+    chartVentasDia = new Chart(ctxVentas, {
+        type: 'line',
+        data: {
+            labels: data.ventas_por_dia.labels,
+            datasets: [{
+                label: 'Total vendido',
+                data: data.ventas_por_dia.values,
+                tension: 0.25,
+                fill: true,
+                backgroundColor: 'rgba(118,185,0,0.12)',
+                borderColor: 'rgba(118,185,0,1)',
+                pointRadius: 3
+            }]
+        },
+        options: {
+            plugins:{legend:{display:false}},
+            scales:{y:{beginAtZero:true}}
+        }
+    });
+
+    // Productos - barras horizontales
+    if(chartProductos) chartProductos.destroy();
+    const prodLabels = data.productos_top.map(p => p.label);
+    const prodValues = data.productos_top.map(p => p.cantidad);
+    chartProductos = new Chart(ctxProductos, {
+        type: 'bar',
+        data: {
+            labels: prodLabels,
+            datasets: [{
+                label: 'Unidades vendidas',
+                data: prodValues,
+                backgroundColor: prodValues.map((_,i)=>`rgba(64,176,80,${0.15 + (i*0.06)})`),
+                borderColor: 'rgba(64,176,80,1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            plugins:{legend:{display:false}},
+            scales:{x:{beginAtZero:true}}
+        }
+    });
+
+    // Categorías - pie
+    if(chartCategorias) chartCategorias.destroy();
+    chartCategorias = new Chart(ctxCategorias, {
+        type: 'doughnut',
+        data: {
+            labels: data.categorias.labels,
+            datasets: [{
+                data: data.categorias.values,
+                backgroundColor: [
+                    '#76b900','#00bfff','#ffb86b','#ff6b6b','#8e44ad','#6c5ce7','#00cec9'
+                ],
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            plugins:{legend:{position:'bottom'}}
+        }
+    });
+}
+
+async function actualizarPantalla(){
+    const data = await fetchDatos();
+    if(!data) return;
+    renderIndicadores(data);
+    buildCharts(data);
+}
+
+// IA analysis
+document.getElementById('btnIA').addEventListener('click', async function(){
+    const iaResult = document.getElementById('iaResult');
+    iaResult.textContent = 'Generando análisis con IA... ⏳';
+    try {
+        const res = await fetch('/analizar_ventas_ia', { method: 'POST' });
+        const json = await res.json();
+        if(json.success){
+            iaResult.textContent = json.analisis;
+        } else {
+            iaResult.textContent = 'Error al generar análisis: ' + (json.error||'desconocido');
+        }
+    } catch(e){
+        iaResult.textContent = 'Error de conexión: ' + e;
+    }
+});
+
+// Refresh button
+document.getElementById('btnRefresh').addEventListener('click', actualizarPantalla);
+
+// Descargar texto IA
+document.getElementById('btnDownloadText').addEventListener('click', function(){
+    const text = document.getElementById('iaResult').textContent || '';
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analisis_ventas_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// Auto carga inicial
+actualizarPantalla();
+</script>
+
+</body>
+</html>

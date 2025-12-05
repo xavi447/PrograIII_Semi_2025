@@ -88,7 +88,7 @@ button:hover {
 </head>
 <body>
 <div class="header">
-    <a href="/productos" class="back-btn">&#8592;</a>
+    <a href="/menu" class="back-btn">&#8592;</a>
     <h2>Categorías</h2>
 </div>
 
@@ -143,19 +143,23 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     window.eliminarCategoria = function(id) {
-        if (confirm("¿Desea eliminar esta categoría?")) {
-            fetch(`/categorias/eliminar/${id}`, { method: 'POST' })
-            .then(res => res.json())
-            .then(res => {
-                if (res.success) {
-                    categorias = res.categorias;
-                    renderCategorias();
-                } else {
-                    alert(res.error);
-                }
-            });
-        }
-    };
+    if (confirm("¿Desea eliminar esta categoría?")) {
+        fetch(`/categorias/eliminar/${id}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+
+                // Arreglado: eliminar la categoría directamente del array local
+                categorias = categorias.filter(c => c.id !== id);
+
+                renderCategorias();
+            } else {
+                alert(res.error);
+            }
+        });
+    }
+};
+
 
     renderCategorias();
 });

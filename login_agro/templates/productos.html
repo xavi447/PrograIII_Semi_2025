@@ -27,23 +27,64 @@ body { font-family: 'Roboto', sans-serif; background: linear-gradient(to bottom,
 button.action-btn { margin-left: 5px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
 button.edit-btn { background-color: #00bfff; color: white; }
 button.delete-btn { background-color: #f44336; color: white; }
-#modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
-#modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:400px; }
-#modal-content input, #modal-content select, #modal-content textarea { width:100%; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #ccc; }
 .add-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #76b900, #40c057); color: white; font-size: 30px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: transform 0.2s, box-shadow 0.2s; z-index: 1000; }
 .add-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
 .add-btn:active { transform: translateY(1px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
 .add-category-btn { position: fixed; bottom: 30px; left: 30px; width: auto; padding: 12px 18px; border-radius: 30px; background: linear-gradient(135deg, #00bfff, #007acc); color: white; font-size: 16px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.3); transition: transform 0.2s, box-shadow 0.2s; z-index: 1000; }
 .add-category-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
+
+/* Estilos para el carrito */
+.cart-container { position: fixed; top: 80px; right: 20px; width: 300px; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 999; padding: 15px; max-height: 70vh; overflow-y: auto; }
+.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.cart-title { font-size: 18px; font-weight: bold; color: #333; }
+.cart-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #777; }
+.cart-items { margin-bottom: 15px; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-weight: bold; font-size: 14px; }
+.cart-item-price { font-size: 12px; color: #666; }
+.cart-item-quantity { display: flex; align-items: center; }
+.quantity-btn { width: 25px; height: 25px; background: #f0f0f0; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.quantity-input { width: 40px; text-align: center; margin: 0 5px; border: 1px solid #ddd; border-radius: 4px; padding: 2px; }
+.cart-item-remove { background: none; border: none; color: #f44336; cursor: pointer; margin-left: 10px; }
+.cart-total { font-weight: bold; font-size: 16px; text-align: right; margin: 10px 0; }
+.cart-actions { display: flex; justify-content: space-between; }
+.cart-btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.cart-clear { background: #f0f0f0; color: #333; }
+.cart-checkout { background: #76b900; color: white; }
+.cart-icon { position: fixed; top: 20px; right: 20px; background: #76b900; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; }
+.cart-badge { position: absolute; top: -5px; right: -5px; background: #f44336; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+
+/* Estilos para el modal de recibo */
+.receipt-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000; }
+.receipt-content { background: white; width: 90%; max-width: 400px; border-radius: 10px; overflow: hidden; }
+.receipt-header { background: #76b900; color: white; padding: 15px; text-align: center; }
+.receipt-body { padding: 20px; }
+.receipt-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.receipt-total { border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px; font-weight: bold; display: flex; justify-content: space-between; }
+.receipt-footer { padding: 15px; text-align: center; background: #f9f9f9; }
+.receipt-close { background: #76b900; color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; }
+
+/* Estilos para el modal de productos */
+#modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index: 1500; }
+#modal-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:400px; }
+#modal-content input, #modal-content select, #modal-content textarea { width:100%; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #ccc; }
 </style>
 </head>
 <body>
 <div class="header">
     <div class="nav-links">
         <a class="active">Mis productos</a>
+        <a href="/compras/historial">Historial de Compras</a>
         <a onclick="alert('Mi cuenta próximamente')">Mi cuenta</a>
         <a href="/logout" style="color:red;">Cerrar sesión</a>
     </div>
+</div>
+
+<!-- Icono del carrito - Solo para usuarios y vendedores -->
+<div class="cart-icon" id="cartIcon" style="display: none;">
+    🛒
+    <div class="cart-badge" id="cartBadge">0</div>
 </div>
 
 <div class="search-container">
@@ -57,6 +98,37 @@ button.delete-btn { background-color: #f44336; color: white; }
 
 <div class="product-list" id="productList"></div>
 
+<!-- Carrito de compras - Solo para usuarios y vendedores -->
+<div class="cart-container" id="cartContainer" style="display: none;">
+    <div class="cart-header">
+        <div class="cart-title">Carrito de Compras</div>
+        <button class="cart-close" id="cartClose">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <!-- Los productos del carrito se agregarán aquí dinámicamente -->
+    </div>
+    <div class="cart-total" id="cartTotal">Total: $0.00</div>
+    <div class="cart-actions">
+        <button class="cart-btn cart-clear" id="cartClear">Vaciar Carrito</button>
+        <button class="cart-btn cart-checkout" id="cartCheckout">Finalizar Compra</button>
+    </div>
+</div>
+
+<!-- Modal de recibo - Solo para usuarios y vendedores -->
+<div class="receipt-modal" id="receiptModal" style="display: none;">
+    <div class="receipt-content">
+        <div class="receipt-header">
+            <h2>Recibo de Compra</h2>
+            <p>Agroquímica La Bellota</p>
+        </div>
+        <div class="receipt-body" id="receiptBody">
+            <!-- Los detalles del recibo se agregarán aquí -->
+        </div>
+        <div class="receipt-footer">
+            <button class="receipt-close" id="receiptClose">Cerrar</button>
+        </div>
+    </div>
+</div>
 
 <button type="button" id="btnAgregar" class="add-btn">+</button>
 <button type="button" id="btnCategoria" class="add-category-btn">+ Categoría</button>
@@ -82,17 +154,304 @@ button.delete-btn { background-color: #f44336; color: white; }
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-
-    
-    const rol_usuario = JSON.parse('{{ rol_usuario | tojson | safe }}');
- 
-
+    // Datos iniciales desde el backend
+    const rol_usuario = '{{ rol_usuario | safe }}';
     let productosData = {{ productos | tojson | safe }};
     let filtroCategoriaActivo = 'Todos';
-
     const categoriasData = {{ categorias | tojson | safe }};
     const categorias = ['Todos', ...categoriasData.map(c=>c.nombre)];
 
+    // Carrito de compras
+    let carrito = [];
+    
+    // Elementos del DOM para el carrito
+    const cartIcon = document.getElementById('cartIcon');
+    const cartBadge = document.getElementById('cartBadge');
+    const cartContainer = document.getElementById('cartContainer');
+    const cartClose = document.getElementById('cartClose');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartClear = document.getElementById('cartClear');
+    const cartCheckout = document.getElementById('cartCheckout');
+    const receiptModal = document.getElementById('receiptModal');
+    const receiptBody = document.getElementById('receiptBody');
+    const receiptClose = document.getElementById('receiptClose');
+
+    // Definir roles que pueden usar el carrito
+    const rolesConCarrito = ['usuario', 'vendedor'];
+
+    // Mostrar u ocultar el carrito según el rol
+    function configurarCarritoPorRol() {
+        // Solo mostrar carrito para usuarios y vendedores
+        if (rolesConCarrito.includes(rol_usuario)) {
+            cartIcon.style.display = 'flex';
+            receiptModal.style.display = 'none'; // Solo se muestra cuando es necesario
+        } else {
+            cartIcon.style.display = 'none';
+            cartContainer.style.display = 'none';
+            receiptModal.style.display = 'none';
+        }
+    }
+
+    // Funciones del carrito
+    function toggleCart() {
+        if (rolesConCarrito.includes(rol_usuario)) {
+            if (cartContainer.style.display === 'none') {
+                cartContainer.style.display = 'block';
+            } else {
+                cartContainer.style.display = 'none';
+            }
+        }
+    }
+
+    function agregarAlCarrito(producto) {
+        // Solo permitir agregar al carrito si el rol tiene permiso
+        if (!rolesConCarrito.includes(rol_usuario)) {
+            alert('Su rol no tiene permisos para realizar compras');
+            return;
+        }
+
+        // Verificar si el producto ya está en el carrito
+        const itemExistente = carrito.find(item => item.id === producto.id);
+        
+        if (itemExistente) {
+            // Si ya existe, aumentar la cantidad si hay stock disponible
+            if (itemExistente.cantidad < producto.stok) {
+                itemExistente.cantidad += 1;
+            } else {
+                alert(`No hay suficiente stock de ${producto.nombre}. Stock disponible: ${producto.stok}`);
+                return;
+            }
+        } else {
+            // Si no existe, agregarlo al carrito con cantidad 1
+            if (producto.stok > 0) {
+                carrito.push({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    precio: parseFloat(producto.precio),
+                    cantidad: 1,
+                    icono: producto.icono,
+                    stok: producto.stok
+                });
+            } else {
+                alert(`No hay stock disponible de ${producto.nombre}`);
+                return;
+            }
+        }
+        
+        actualizarCarrito();
+        toggleCart(); // Mostrar el carrito al agregar un producto
+    }
+
+    function actualizarCarrito() {
+        // Solo actualizar carrito si el rol tiene permiso
+        if (!rolesConCarrito.includes(rol_usuario)) return;
+
+        // Actualizar la lista de productos en el carrito
+        cartItems.innerHTML = '';
+        
+        let total = 0;
+        
+        carrito.forEach(item => {
+            const subtotal = item.precio * item.cantidad;
+            total += subtotal;
+            
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+            cartItem.innerHTML = `
+                <div class="product-icon" style="width: 40px; height: 40px; font-size: 20px;">${item.icono}</div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.nombre}</div>
+                    <div class="cart-item-price">$${item.precio.toFixed(2)}</div>
+                </div>
+                <div class="cart-item-quantity">
+                    <button class="quantity-btn" onclick="disminuirCantidad(${item.id})">-</button>
+                    <input type="number" class="quantity-input" value="${item.cantidad}" min="1" max="${item.stok}" onchange="actualizarCantidad(${item.id}, this.value)">
+                    <button class="quantity-btn" onclick="aumentarCantidad(${item.id})">+</button>
+                </div>
+                <button class="cart-item-remove" onclick="eliminarDelCarrito(${item.id})">✕</button>
+            `;
+            
+            cartItems.appendChild(cartItem);
+        });
+        
+        // Actualizar el total
+        cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+        
+        // Actualizar el badge del carrito
+        const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+        cartBadge.textContent = totalItems;
+        
+        // Mostrar u ocultar el badge
+        cartBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+
+    function aumentarCantidad(productoId) {
+        if (!rolesConCarrito.includes(rol_usuario)) return;
+        
+        const item = carrito.find(item => item.id === productoId);
+        if (item && item.cantidad < item.stok) {
+            item.cantidad += 1;
+            actualizarCarrito();
+        } else {
+            alert('No hay suficiente stock disponible');
+        }
+    }
+
+    function disminuirCantidad(productoId) {
+        if (!rolesConCarrito.includes(rol_usuario)) return;
+        
+        const item = carrito.find(item => item.id === productoId);
+        if (item && item.cantidad > 1) {
+            item.cantidad -= 1;
+            actualizarCarrito();
+        } else {
+            eliminarDelCarrito(productoId);
+        }
+    }
+
+    function actualizarCantidad(productoId, nuevaCantidad) {
+        if (!rolesConCarrito.includes(rol_usuario)) return;
+        
+        const item = carrito.find(item => item.id === productoId);
+        if (item) {
+            const cantidad = parseInt(nuevaCantidad);
+            if (cantidad >= 1 && cantidad <= item.stok) {
+                item.cantidad = cantidad;
+                actualizarCarrito();
+            } else if (cantidad > item.stok) {
+                alert(`No hay suficiente stock. Máximo disponible: ${item.stok}`);
+                item.cantidad = item.stok;
+                actualizarCarrito();
+            } else {
+                eliminarDelCarrito(productoId);
+            }
+        }
+    }
+
+    function eliminarDelCarrito(productoId) {
+        if (!rolesConCarrito.includes(rol_usuario)) return;
+        
+        carrito = carrito.filter(item => item.id !== productoId);
+        actualizarCarrito();
+    }
+
+    function vaciarCarrito() {
+        if (!rolesConCarrito.includes(rol_usuario)) return;
+        
+        if (confirm('¿Está seguro de que desea vaciar el carrito?')) {
+            carrito = [];
+            actualizarCarrito();
+        }
+    }
+
+    function finalizarCompra() {
+        if (!rolesConCarrito.includes(rol_usuario)) {
+            alert('Su rol no tiene permisos para realizar compras');
+            return;
+        }
+        
+        if (carrito.length === 0) {
+            alert('El carrito está vacío');
+            return;
+        }
+        
+        // Calcular total
+        const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        
+        // Enviar compra al servidor
+        fetch('/compras/finalizar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                carrito: carrito,
+                total: total
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                // Generar el recibo con número de recibo
+                let reciboHTML = `
+                    <div class="receipt-item">
+                        <div><strong>N° Recibo:</strong></div>
+                        <div>${res.numero_recibo}</div>
+                    </div>
+                    <div class="receipt-item">
+                        <div><strong>Fecha:</strong></div>
+                        <div>${new Date().toLocaleString()}</div>
+                    </div>
+                    <hr style="margin: 10px 0;">
+                `;
+                
+                let totalCalculado = 0;
+                
+                carrito.forEach(item => {
+                    const subtotal = item.precio * item.cantidad;
+                    totalCalculado += subtotal;
+                    
+                    reciboHTML += `
+                        <div class="receipt-item">
+                            <div>${item.nombre} x${item.cantidad}</div>
+                            <div>$${subtotal.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+                
+                reciboHTML += `
+                    <div class="receipt-total">
+                        <div>Total:</div>
+                        <div>$${totalCalculado.toFixed(2)}</div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px; color: #76b900;">
+                        <strong>¡Compra realizada con éxito!</strong>
+                    </div>
+                `;
+                
+                receiptBody.innerHTML = reciboHTML;
+                receiptModal.style.display = 'flex';
+                
+                // Actualizar la lista de productos con el nuevo stock
+                if (res.productos) {
+                    productosData = res.productos;
+                    applyFilters();
+                }
+                
+                // Vaciar el carrito después de la compra
+                carrito = [];
+                actualizarCarrito();
+                toggleCart(); // Ocultar el carrito
+                
+            } else {
+                alert('Error al procesar la compra: ' + res.error);
+            }
+        })
+        .catch(err => {
+            alert('Error de conexión: ' + err);
+        });
+    }
+
+    // Event listeners para el carrito (solo si el rol tiene permiso)
+    if (rolesConCarrito.includes(rol_usuario)) {
+        cartIcon.addEventListener('click', toggleCart);
+        cartClose.addEventListener('click', toggleCart);
+        cartClear.addEventListener('click', vaciarCarrito);
+        cartCheckout.addEventListener('click', finalizarCompra);
+        receiptClose.addEventListener('click', () => {
+            receiptModal.style.display = 'none';
+        });
+    }
+
+    // Hacer las funciones del carrito disponibles globalmente
+    window.agregarAlCarrito = agregarAlCarrito;
+    window.disminuirCantidad = disminuirCantidad;
+    window.aumentarCantidad = aumentarCantidad;
+    window.actualizarCantidad = actualizarCantidad;
+    window.eliminarDelCarrito = eliminarDelCarrito;
+
+    // Resto del código existente
     const selectCategoria = document.getElementById('categoria');
     categoriasData.forEach(c=>{
         const option = document.createElement('option');
@@ -122,17 +481,53 @@ document.addEventListener('DOMContentLoaded', function(){
     function renderProducts(products){
         const listContainer=document.getElementById('productList');
         listContainer.innerHTML='';
-        if(products.length===0){ listContainer.innerHTML='<div class="no-results">No se encontraron productos.</div>'; return; }
+        if(products.length===0){ 
+            listContainer.innerHTML='<div class="no-results">No se encontraron productos.</div>'; 
+            return; 
+        }
+        
         products.forEach(p=>{
             const item=document.createElement('div');
             item.className='product-item';
-            item.innerHTML=`<div class="product-icon">${p.icono||'📦'}</div>
+            
+            // Verificar si el producto está agotado
+            const estaAgotado = p.stok <= 0;
+            
+            if (estaAgotado) {
+                item.style.opacity = '0.6';
+                item.style.backgroundColor = '#f8f8f8';
+            }
+            
+            item.innerHTML=`
+                <div class="product-icon">${p.icono||'📦'}</div>
                 <div class="product-info">
-                    <div class="product-name">${p.nombre}</div>
+                    <div class="product-name">${p.nombre} ${estaAgotado ? '<span style="color:red;">(Agotado)</span>' : ''}</div>
                     <div class="product-desc">${p.descripcion} (${p.categoria})</div>
-                </div>`;
-            item.addEventListener('click', ()=>{ window.location.href = `/productos/detalle/${p.id}`; });
-
+                    <div class="product-desc">Stock: ${p.stok} | Precio: $${parseFloat(p.precio).toFixed(2)}</div>
+                </div>
+            `;
+            
+            // Botón para agregar al carrito - Solo si hay stock y el rol tiene permiso
+            if (rolesConCarrito.includes(rol_usuario) && !estaAgotado) {
+                const addToCartBtn = document.createElement('button');
+                addToCartBtn.textContent = 'Agregar al Carrito';
+                addToCartBtn.className = 'action-btn';
+                addToCartBtn.style.backgroundColor = '#76b900';
+                addToCartBtn.style.color = 'white';
+                addToCartBtn.onclick = e => { 
+                    e.stopPropagation(); 
+                    agregarAlCarrito(p);
+                };
+                item.appendChild(addToCartBtn);
+            } else if (rolesConCarrito.includes(rol_usuario) && estaAgotado) {
+                const sinStockBtn = document.createElement('button');
+                sinStockBtn.textContent = 'Sin existencias';
+                sinStockBtn.className = 'action-btn';
+                sinStockBtn.style.backgroundColor = '#cccccc';
+                sinStockBtn.style.color = '#666666';
+                sinStockBtn.disabled = true;
+                item.appendChild(sinStockBtn);
+            }
             
             if(rol_usuario === 'administrador'){
                 const editBtn=document.createElement('button');
@@ -155,7 +550,10 @@ document.addEventListener('DOMContentLoaded', function(){
         const query=document.getElementById('searchInput').value.toLowerCase();
         let resultado=productosData;
         if(filtroCategoriaActivo!=='Todos') resultado=resultado.filter(p=>p.categoria===filtroCategoriaActivo);
-        if(query) resultado=resultado.filter(p=>p.nombre.toLowerCase().includes(query) || p.descripcion.toLowerCase().includes(query));
+        if(query) resultado=resultado.filter(p=>
+            p.nombre.toLowerCase().includes(query) || 
+            p.descripcion.toLowerCase().includes(query)
+        );
         renderProducts(resultado);
     }
 
@@ -170,7 +568,8 @@ document.addEventListener('DOMContentLoaded', function(){
             document.getElementById('productoId').value=producto.id;
             document.getElementById('nombre').value=producto.nombre;
             document.getElementById('descripcion').value=producto.descripcion;
-            document.getElementById('categoria').value=producto.categoria_id;
+            // Usar categoria_id en lugar de categoria
+            document.getElementById('categoria').value=producto.categoria_id || '';
             document.getElementById('precio').value=producto.precio;
             document.getElementById('stok').value=producto.stok;
             document.getElementById('icono').value=producto.icono;
@@ -180,7 +579,6 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function closeModal(){ document.getElementById('modal').style.display='none'; }
-
     
     if(rol_usuario === 'administrador'){
         document.getElementById('btnAgregar').style.display = 'block';
@@ -238,6 +636,8 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     }
 
+    // Configurar la visibilidad del carrito según el rol
+    configurarCarritoPorRol();
     renderCategoryButtons();
     renderProducts(productosData);
 });

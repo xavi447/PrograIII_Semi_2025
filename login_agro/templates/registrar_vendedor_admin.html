@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Vendedor o Administrador</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+   body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(to bottom, #74E874 0%, #40E0D0 20%, #20B2AA 40%, #008B8B 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 380px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #00796b;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        margin-bottom: 18px;
+        border-radius: 8px;
+        border: 1px solid #bdbdbd;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #26a69a;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #00897b;
+    }
+
+    .back {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #00796b;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2><i class="fa-solid fa-user-plus"></i> Registrar Usuario</h2>
+
+    <form action="/registrar_vendedor_admin" method="POST">
+
+        <!-- LOGIN -->
+        <label>Nombre de usuario</label>
+        <input type="text" name="usuario" required>
+
+        <label>Contraseña</label>
+        <input type="password" name="clave" required>
+
+
+        <!-- DATOS GENERALES -->
+        <label>Nombre completo</label>
+        <input type="text" name="nombre_completo" required>
+
+        <label>Dirección</label>
+        <input type="text" name="direccion">
+
+        <label>Correo electrónico</label>
+        <input type="email" name="correo">
+
+        <label>Teléfono</label>
+        <input type="text" name="telefono">
+
+        <label>DUI</label>
+        <input type="text" name="dui">
+
+        <label>Fecha de nacimiento</label>
+        <input type="date" name="fecha_nacimiento">
+
+
+        <!-- ROL -->
+        <label>Rol</label>
+        <select name="rol" id="rol" required onchange="mostrarCampos()">
+            <option value="administrador">Administrador</option>
+            <option value="vendedor">Vendedor</option>
+        </select>
+
+
+        <!-- CAMPOS ADMINISTRADOR -->
+        <div id="camposAdmin" class="hidden">
+            <label>Cargo</label>
+            <input type="text" name="cargo">
+
+            <label>Salario</label>
+            <input type="number" step="0.01" name="salario">
+        </div>
+
+
+        <!-- CAMPOS VENDEDOR -->
+        <div id="camposVendedor" class="hidden">
+            <label>Sueldo</label>
+            <input type="number" step="0.01" name="sueldo">
+
+            <label>Fecha de contratación</label>
+            <input type="date" name="fecha_contratacion">
+
+            <label>Comisión (%)</label>
+            <input type="number" step="0.01" name="comision">
+        </div>
+
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <a href="/menu" class="back">⬅ Volver al menú</a>
+</div>
+
+
+<script>
+function mostrarCampos() {
+    const rol = document.getElementById("rol").value;
+    const vendedor = document.getElementById("camposVendedor");
+    const admin = document.getElementById("camposAdmin");
+
+    vendedor.classList.add("hidden");
+    admin.classList.add("hidden");
+
+    if (rol === "vendedor") vendedor.classList.remove("hidden");
+    if (rol === "administrador") admin.classList.remove("hidden");
+}
+
+</script>
+
+</body>
+</html>
+
+

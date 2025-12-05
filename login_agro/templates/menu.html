@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Menú - Agroquímica La Bellota</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,10 +22,10 @@
     }
 
     #main-menu-container {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         padding: 60px 40px;
         background-color: rgba(255, 255, 255, 0.15);
         border-radius: 20px;
@@ -120,7 +123,7 @@
     }
 
     .green-button {
-        background-color: #A5D6A7; 
+        background-color: #A5D6A7;
         color: #2E7D32;
     }
 
@@ -129,7 +132,7 @@
     }
 
     .light-green-button {
-        background-color: #C8E6C9; 
+        background-color: #C8E6C9;
         color: #388E3C;
     }
 
@@ -142,21 +145,94 @@
         font-weight: bold;
         text-decoration: none;
         font-size: 18px;
+        margin-top: 15px;
     }
 
- 
+    /* --- ICONOS INFERIORES PROFESIONALES --- */
+    .bottom-icons {
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+    }
+
+    .icon-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
+        transition: 0.3s;
+    }
+
+    .icon-box i {
+        font-size: 45px;
+        margin-bottom: 8px;
+    }
+
+    .icon-box span {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .icon-box:hover {
+        transform: scale(1.12);
+        color: #FFEB3B;
+    }
+
+    /* Mostrar información del rol */
+    .rol-info {
+        color: white;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 8px 15px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .admin-badge {
+        background: #ff9800;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .vendedor-badge {
+        background: #2196F3;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .usuario-badge {
+        background: #4CAF50;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
     @media (max-width: 768px) {
         #main-menu-container { padding: 40px 20px; }
         .instruction-text { font-size: 20px; }
         .menu-button { font-size: 18px; padding: 16px 20px; }
         .logo-title, .logo-subtitle { font-size: 24px; }
         .logo-image { width: 60px; height: 60px; }
+        .bottom-icons { gap: 25px; }
+        .icon-box i { font-size: 35px; }
     }
 </style>
 </head>
 <body>
 
 <div id="main-menu-container">
+
     <div class="logo-container">
         <div class="logo-text">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-image">
@@ -167,14 +243,69 @@
         </div>
     </div>
 
-    <p class="instruction-text">¡Hola, {{ usuario }}! Elige una opción:</p>
+    <p class="instruction-text">
+        ¡Hola, {{ usuario }}! 
+        <div class="rol-info">
+            Rol: {{ rol }}
+            {% if rol == 'administrador' %}
+                <span class="admin-badge">Administrador</span>
+            {% elif rol == 'vendedor' %}
+                <span class="vendedor-badge">Vendedor</span>
+            {% else %}
+                <span class="usuario-badge">Usuario</span>
+            {% endif %}
+        </div>
+        Elige una opción:
+    </p>
 
     <div class="menu-options">
-        <a href="/productos" class="menu-button green-button">Ver mis productos</a>
-        <a href="#" onclick="alert('Asistente IA próximamente')" class="menu-button light-green-button">Asistente IA</a>
+        <a href="/productos" class="menu-button green-button">
+            <i class="fa-solid fa-box" style="margin-right: 10px;"></i>Ver Productos
+        </a>
+        
+        <a href="/asistente-ia" class="menu-button light-green-button">
+            <i class="fa-solid fa-robot" style="margin-right: 10px;"></i>Asistente IA
+        </a>
+        
+        <!-- Opciones según el rol -->
+        {% if rol == 'administrador' or rol == 'vendedor' %}
+        <a href="/categorias" class="menu-button" style="background-color: #FFE082; color: #F57C00;">
+            <i class="fa-solid fa-tags" style="margin-right: 10px;"></i>Gestionar Categorías
+        </a>
+        {% endif %}
+        
+        <a href="/compras/historial" class="menu-button" style="background-color: #BBDEFB; color: #1976D2;">
+            <i class="fa-solid fa-history" style="margin-right: 10px;"></i>Historial de Compras
+        </a>
     </div>
 
-    <a href="/logout" class="logout-link">Cerrar sesión</a>
+    <!-- ICONOS SOLO PARA ADMINISTRADORES -->
+    {% if rol == 'administrador' %}
+    <div class="bottom-icons">
+        <!-- Agregar personal -->
+        <a href="/registrar_vendedor_admin" class="icon-box" title="Agregar nuevo personal">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Agregar Personal</span>
+        </a>
+        
+        <!-- Estadísticas -->
+       <a href="/analisis_ventas_ia" class="icon-box" title="Ver estadísticas">
+    <i class="fa-solid fa-chart-line"></i>
+    <span>Estadísticas</span>
+</a>
+
+        
+        <!-- Gestión de productos -->
+        <a href="/productos" class="icon-box" title="Gestionar productos">
+            <i class="fa-solid fa-boxes"></i>
+            <span>Productos</span>
+        </a>
+    </div>
+    {% endif %}
+
+    <a href="/logout" class="logout-link">
+        <i class="fa-solid fa-sign-out-alt" style="margin-right: 8px;"></i>Cerrar sesión
+    </a>
 </div>
 
 </body>

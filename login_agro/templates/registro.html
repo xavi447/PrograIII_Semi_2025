@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crear cuenta</title>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #1565c0 0%, #4dd0e1 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    width: 360px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+}
+button {
+    width: 100%;
+    padding: 12px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover { background: #0d47a1; }
+
+.error { color:red; font-weight:bold; margin-top:10px; }
+.success { color:green; font-weight:bold; margin-top:10px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2 style="text-align:center; color:#1565c0;">Crear nueva cuenta</h2>
+
+    <form method="POST">
+        <!-- Tabla usuarios -->
+        <input type="text" name="usuario" placeholder="Nombre de usuario" required>
+        <input type="password" name="contrasena" placeholder="Contraseña" required>
+        <input type="password" name="confirmar" placeholder="Confirmar contraseña" required>
+
+        <!-- Tabla usuario_detalle -->
+        <input type="text" name="nombre_completo" placeholder="Nombre completo" required>
+        <input type="text" name="direccion" placeholder="Dirección" required>
+        <input type="email" name="correo" placeholder="Correo electrónico" required>
+        <input type="text" name="telefono" placeholder="Teléfono" required>
+        <input type="text" name="dui" placeholder="DUI" required>
+        <input type="date" name="fecha_nacimiento" required>
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    {% if mensaje %}
+    <div class="error">{{ mensaje }}</div>
+    {% endif %}
+
+    {% if exito %}
+    <div class="success">{{ exito }}</div>
+    {% endif %}
+
+    <a href="/login"><button style="margin-top:10px;">Volver al login</button></a>
+</div>
+</body>
+</html>
+

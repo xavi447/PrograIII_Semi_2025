@@ -1,0 +1,600 @@
+asistente_ia <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGRO-ASIST - Agroquímica La Bellota</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a3c1a 0%, #2d5a2d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            overflow: hidden; /* SOLUCIÓN: Evitar scroll en body */
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            height: 95vh !important;  /* SOLUCIÓN: Altura forzada */
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 95vh !important;
+            position: relative;
+        }
+        
+        /* HEADER ESTILIZADO */
+        .header {
+            background: linear-gradient(90deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 5px solid #1B5E20;
+            flex-shrink: 0; /* SOLUCIÓN: No encoger */
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header h1 i {
+            font-size: 36px;
+            color: #FFEB3B;
+        }
+        
+        .usuario-info {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .rol-badge {
+            background: #FF9800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        /* SOLUCIÓN 1: CONTENEDOR DEL CHAT MEJORADO */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto !important;  /* SOLUCIÓN: Scroll forzado */
+            padding: 25px;
+            background: #f5f9f5;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 0 !important; /* SOLUCIÓN: Permitir scroll */
+            max-height: calc(95vh - 250px) !important; /* SOLUCIÓN: Altura calculada */
+            height: auto !important;
+        }
+        
+        /* MENSAJES DEL USUARIO */
+        .mensaje-usuario {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 18px 22px;
+            border-radius: 20px 20px 5px 20px;
+            max-width: 70%;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            animation: slideInRight 0.3s ease;
+            flex-shrink: 0; /* SOLUCIÓN: No encoger mensajes */
+        }
+        
+        .mensaje-usuario strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* MENSAJES DEL ASISTENTE - MEJORADOS */
+        .mensaje-asistente {
+            align-self: flex-start;
+            background: white;
+            padding: 0;
+            border-radius: 20px 20px 20px 5px;
+            max-width: 80%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0f2e0;
+            overflow: hidden;
+            animation: slideInLeft 0.3s ease;
+            flex-shrink: 0; /* SOLUCIÓN: No encoger mensajes */
+        }
+        
+        .asistente-header {
+            background: linear-gradient(90deg, #1976D2, #2196F3);
+            color: white;
+            padding: 15px 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .asistente-header i {
+            font-size: 22px;
+        }
+        
+        .asistente-header strong {
+            font-size: 16px;
+        }
+        
+        .respuesta-contenido {
+            padding: 22px;
+            white-space: pre-line;
+            line-height: 1.7;
+            font-size: 16px;
+            overflow-wrap: break-word; /* SOLUCIÓN: Romper palabras largas */
+            word-break: break-word; /* SOLUCIÓN: Romper palabras */
+        }
+        
+        /* ESTILOS PARA LAS SECCIONES ORGANIZADAS */
+        .seccion-titulo {
+            color: #1B5E20;
+            font-weight: 700;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #C8E6C9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .punto-lista {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .punto-item {
+            margin-bottom: 10px;
+            padding-left: 5px;
+            position: relative;
+        }
+        
+        .punto-item:before {
+            content: "•";
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 20px;
+            position: absolute;
+            left: -15px;
+            top: -2px;
+        }
+        
+        /* SOLUCIÓN: ÁREA DE ENTRADA FIJA */
+        .input-area {
+            padding: 20px;
+            background: #f8fff8;
+            border-top: 2px solid #e0f2e0;
+            flex-shrink: 0; /* SOLUCIÓN: No encoger */
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        .input-container textarea {
+            flex: 1;
+            padding: 18px;
+            border: 2px solid #C8E6C9;
+            border-radius: 15px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            resize: none;
+            min-height: 60px;
+            max-height: 120px;
+            transition: border 0.3s;
+        }
+        
+        .input-container textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .input-container button {
+            padding: 18px 30px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .input-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* SOLUCIÓN: BOTONES INFERIORES FIJOS */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #f0f8f0;
+            border-top: 1px solid #e0f2e0;
+            flex-shrink: 0; /* SOLUCIÓN: No encoger */
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+        }
+        
+        .btn-clear {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 2px solid #ffcdd2;
+        }
+        
+        .btn-clear:hover {
+            background: #ffcdd2;
+        }
+        
+        .btn-back {
+            background: #e3f2fd;
+            color: #1976D2;
+            border: 2px solid #bbdefb;
+            text-align: center;
+        }
+        
+        .btn-back:hover {
+            background: #bbdefb;
+        }
+        
+        /* ANIMACIONES */
+        @keyframes slideInRight {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* SOLUCIÓN: SCROLLBAR PERSONALIZADO MEJORADO */
+        .chat-container::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 5px;
+            border: 2px solid #f1f1f1;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #2E7D32;
+        }
+        
+        /* SOLUCIÓN: RESPONSIVE MEJORADO */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                height: 98vh !important;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .chat-container {
+                max-height: calc(98vh - 220px) !important;
+                padding: 15px;
+            }
+            
+            .mensaje-usuario,
+            .mensaje-asistente {
+                max-width: 95%;
+            }
+            
+            .input-container {
+                flex-direction: column;
+            }
+            
+            .input-container button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .action-btn {
+                justify-content: center;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> AGRO-ASIST - Asistente IA</h1>
+            <div class="usuario-info">
+                Hola, <strong>{{ usuario }}</strong> 
+                {% if rol %}
+                <span class="rol-badge">{{ rol | capitalize }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- CONTENEDOR DEL CHAT -->
+        <div class="chat-container" id="chatContainer">
+            {% for mensaje in chat_history %}
+                {% if mensaje.role == 'user' %}
+                    <div class="mensaje-usuario">
+                        <strong><i class="fas fa-user"></i> Tú</strong>
+                        {{ mensaje.content }}
+                    </div>
+                {% elif mensaje.role == 'assistant' %}
+                    <div class="mensaje-asistente">
+                        <div class="asistente-header">
+                            <i class="fas fa-seedling"></i>
+                            <strong>AGRO-ASIST</strong>
+                        </div>
+                        <div class="respuesta-contenido">
+                            {{ mensaje.content | safe }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <!-- ÁREA DE ENTRADA -->
+        <div class="input-area">
+            <form method="POST" id="chatForm">
+                <div class="input-container">
+                    <textarea 
+                        name="pregunta" 
+                        id="preguntaInput" 
+                        placeholder="Escribe tu pregunta sobre agroquímica aquí..." 
+                        rows="2"
+                        required
+                        autocomplete="off"
+                    ></textarea>
+                    <button type="submit" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Enviar
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="action-buttons">
+            <button type="button" class="action-btn btn-clear" id="limpiarBtn">
+                <i class="fas fa-broom"></i> Limpiar Conversación
+            </button>
+            <a href="/menu" class="action-btn btn-back">
+                <i class="fas fa-arrow-left"></i> Volver al Menú
+                
+            </a>
+        </div><!-- Agrega esto en la sección de action-buttons -->
+<button type="button" class="action-btn" id="verProductosBtn" style="background: #4CAF50; color: white;">
+    <i class="fas fa-box"></i> Ver Productos Disponibles
+</button>
+
+<script>
+// Agregar funcionalidad para ver productos
+document.getElementById('verProductosBtn').addEventListener('click', function() {
+    const pregunta = "¿Qué productos tienes disponibles?";
+    document.getElementById('preguntaInput').value = pregunta;
+    document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+});
+</script>
+    </div>
+
+    <script>
+        // SOLUCIÓN: Función mejorada para scroll
+        function scrollToBottom() {
+            const container = document.getElementById('chatContainer');
+            if (container) {
+                // Usar requestAnimationFrame para mejor rendimiento
+                requestAnimationFrame(() => {
+                    container.scrollTo({
+                        top: container.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        }
+        
+        // SOLUCIÓN: Scroll al cargar con delay
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                scrollToBottom();
+                document.getElementById('preguntaInput').focus();
+            }, 300);
+        });
+        
+        // SOLUCIÓN: Limpiar chat mejorado
+        document.getElementById('limpiarBtn').addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que quieres limpiar toda la conversación?')) {
+                const boton = this;
+                const textoOriginal = boton.innerHTML;
+                
+                boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Limpiando...';
+                boton.disabled = true;
+                
+                fetch('/limpiar-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        throw new Error('Respuesta no exitosa');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al limpiar el chat. Intenta recargar la página.');
+                    boton.innerHTML = textoOriginal;
+                    boton.disabled = false;
+                });
+            }
+        });
+        
+        // SOLUCIÓN: Auto-expand textarea mejorado
+        const textarea = document.getElementById('preguntaInput');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            const newHeight = Math.min(this.scrollHeight, 120);
+            this.style.height = newHeight + 'px';
+            
+            // Ajustar scroll del chat
+            scrollToBottom();
+        });
+        
+        // SOLUCIÓN: Enviar con AJAX para mejor experiencia
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const preguntaInput = document.getElementById('preguntaInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const pregunta = preguntaInput.value.trim();
+            
+            if (!pregunta) {
+                alert('Por favor, escribe un mensaje');
+                return;
+            }
+            
+            // Deshabilitar controles
+            preguntaInput.disabled = true;
+            submitBtn.disabled = true;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            
+            // Mostrar mensaje inmediatamente (simulado)
+            const chatContainer = document.getElementById('chatContainer');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'mensaje-usuario';
+            userMessage.innerHTML = `<strong><i class="fas fa-user"></i> Tú</strong>${pregunta}`;
+            chatContainer.appendChild(userMessage);
+            
+            // Scroll inmediato
+            scrollToBottom();
+            
+            // Enviar al servidor
+            const formData = new FormData();
+            formData.append('pregunta', pregunta);
+            
+            fetch('/asistente-ia', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Recargar para ver la respuesta del asistente
+                    location.reload();
+                } else {
+                    throw new Error('Error en la respuesta');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al enviar el mensaje. Intenta nuevamente.');
+                
+                // Restaurar controles
+                preguntaInput.disabled = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                preguntaInput.focus();
+                
+                // Eliminar mensaje simulado si hay error
+                chatContainer.removeChild(userMessage);
+            });
+            
+            // Limpiar textarea
+            preguntaInput.value = '';
+            preguntaInput.style.height = 'auto';
+        });
+        
+        // SOLUCIÓN: Enviar con Enter
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (this.value.trim()) {
+                    document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+        
+        // SOLUCIÓN: Scroll cuando cambia el tamaño de la ventana
+        window.addEventListener('resize', () => {
+            setTimeout(scrollToBottom, 100);
+        });
+        
+        // SOLUCIÓN: Scroll cuando se carga nueva imagen
+        window.addEventListener('load', scrollToBottom);
+    </script>
+</body>
+</html>
